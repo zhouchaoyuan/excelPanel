@@ -38,6 +38,6 @@ publish {
     groupId = 'cn.zhouchaoyuan'//jcenter上的路径
     artifactId = 'excelpanel'//项目名称
     publishVersion = '1.0.0'//版本号
-    desc = 'A two-dimensional RecyclerView,it can load data from history,it also can load more data!'//描述
+    desc = 'A two-dimensional RecyclerView，it can load historical data，it also can load more data。'//描述
     website = 'https://github.com/zhouchaoyuan/excelPanel'//网站
 }
