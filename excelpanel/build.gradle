@@ -1,0 +1,43 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.3"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:recyclerview-v7:24.0.0'
+    testCompile 'junit:junit:4.12'
+}
+
+//添加
+publish {
+    userOrg = 'chaoyuan'//bintray.com用户名
+    groupId = 'cn.zhouchaoyuan'//jcenter上的路径
+    artifactId = 'excelpanel'//项目名称
+    publishVersion = '1.0.0'//版本号
+    desc = 'A two-dimensional RecyclerView,it can load data from history,it also can load more data!'//描述
+    website = 'https://github.com/zhouchaoyuan/excelPanel'//网站
+}

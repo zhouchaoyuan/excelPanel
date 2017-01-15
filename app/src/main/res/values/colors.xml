@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="pms_normal_cell_bg">#FEFFFE</color>
+    <color name="white">#ffffff</color>
+    <color name="bg_line">#E7E7E7</color>
+    <color name="text_dark1">#333333</color>
+    <color name="text_dark2">#666666</color>
+    <color name="text_dark3">#999999</color>
+    <color name="booking">#f9266f</color>
+    <color name="staying">#64d8ef</color>
+    <color name="left">#a981ff</color>
+</resources>
