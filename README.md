@@ -87,6 +87,8 @@ adapter = new CustomAdapter(this, blockListener);
 excelPanel.setAdapter(adapter);
 excelPanel.setOnLoadMoreListener(this);//your Activity or Fragment implement ExcelPanel.OnLoadMoreListener
 adapter.setAllData(colTitles, rowTitles, cells);
+adapter.enableFooter();//load more
+adapter.enableHeader();//load history
 ```
 
 #License
