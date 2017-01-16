@@ -11,10 +11,10 @@
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cell_background="@color/pms_normal_cell_bg"
-        app:left_cell_width="@dimen/pms_room_status_cell_length"
-        app:normal_cell_length="@dimen/pms_room_status_cell_length"
-        app:top_cell_height="@dimen/pms_room_status_cell_length" />
+        app:cell_background="@color/normal_cell_bg"
+        app:left_cell_width="@dimen/room_status_cell_length"
+        app:normal_cell_length="@dimen/room_status_cell_length"
+        app:top_cell_height="@dimen/room_status_cell_length" />
 
     <ProgressBar
         android:id="@+id/progress"

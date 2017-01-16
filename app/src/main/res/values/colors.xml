@@ -3,7 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="pms_normal_cell_bg">#FEFFFE</color>
+    <color name="normal_cell_bg">#FEFFFE</color>
     <color name="white">#ffffff</color>
     <color name="bg_line">#E7E7E7</color>
     <color name="text_dark1">#333333</color>

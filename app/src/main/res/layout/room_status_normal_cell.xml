@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/pms_room_status_cell_length"
-    android:layout_height="@dimen/pms_room_status_cell_length">
+    android:layout_width="@dimen/room_status_cell_length"
+    android:layout_height="@dimen/room_status_cell_length">
 
     <LinearLayout
         android:id="@+id/pms_cell_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/pms_normal_cell_bg"
+        android:background="@color/normal_cell_bg"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="5dp">

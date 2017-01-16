@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements ExcelPanel.OnLoad
 
     public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
     public static final String WEEK_FORMAT_PATTERN = "EEEE";
-    public static final String[] CHANNEL = {"美团", "携程", "艺龙", "去哪里", "其他"};
+    public static final String[] CHANNEL = {"途牛", "携程", "艺龙", "去哪儿", "其他"};
     public static final String[] NAME = {"刘亦菲", "迪丽热巴", "柳岩", "范冰冰", "唐嫣", "杨幂", "刘诗诗"};
     public static final long ONE_DAY = 24 * 3600 * 1000;
     public static final int PAGE_SIZE = 14;

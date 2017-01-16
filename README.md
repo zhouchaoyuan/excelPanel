@@ -1,9 +1,9 @@
 # excelPanel
-A two-dimensional RecyclerView，it can load historical data，it also can load more data。
+A two-dimensional RecyclerView. It can load historical data. It also can load more data.
 
 ![demo_gif](https://raw.githubusercontent.com/zhouchaoyuan/excelPanel/master/app/src/main/assets/roomFormDemo.gif)
 
-# Download
+# Including in your project
 
 ```xml
 compile 'cn.zhouchaoyuan:excelpanel:1.0.0'
@@ -11,21 +11,33 @@ compile 'cn.zhouchaoyuan:excelpanel:1.0.0'
 
 # Usage
 
-###1、write in xml
+###1、Write in xml
 
 ```xml
 <cn.zhouchaoyuan.excelpanel.ExcelPanel
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cell_background="@color/pms_normal_cell_bg"
-        app:left_cell_width="@dimen/pms_room_status_cell_length"
-        app:normal_cell_length="@dimen/pms_room_status_cell_length"
-        app:top_cell_height="@dimen/pms_room_status_cell_length" />
+        app:cell_background="@color/normal_cell_bg"
+        app:left_cell_width="@dimen/room_status_cell_length"
+        app:normal_cell_length="@dimen/room_status_cell_length"
+        app:top_cell_height="@dimen/room_status_cell_length" />
 ```
 
+Configure using xml attributes
+
+```xml
+
+app:cell_background="@color/normal_cell_bg"              //container cell's background
+app:left_cell_width="@dimen/room_status_cell_length"     //left header cell's width
+app:normal_cell_length="@dimen/room_status_cell_length"  //container cell's width
+app:top_cell_height="@dimen/room_status_cell_length"     //top header cell's width
+
+```
+
+
 ###2、define your Custom Adapter
-Adapter extends BaseExcelPanelAdapter and override seven method show as follow:
+Your adapter must extends BaseExcelPanelAdapter and override seven methods show as follow:
 
 ```java
 public class Adapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cell>{
@@ -34,6 +46,7 @@ public class Adapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cell>{
         super(context);
     }
 
+    //=========================================normal cell=========================================
     @Override
     public RecyclerView.ViewHolder onCreateCellViewHolder(ViewGroup parent, int viewType) {
         return null;
@@ -44,6 +57,7 @@ public class Adapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cell>{
 
     }
 
+    //=========================================top cell===========================================
     @Override
     public RecyclerView.ViewHolder onCreateTopViewHolder(ViewGroup parent, int viewType) {
         return null;
@@ -54,6 +68,7 @@ public class Adapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cell>{
 
     }
 
+    //=========================================left cell===========================================
     @Override
     public RecyclerView.ViewHolder onCreateLeftViewHolder(ViewGroup parent, int viewType) {
         return null;
@@ -64,6 +79,7 @@ public class Adapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cell>{
 
     }
 
+    //=========================================top left cell=======================================
     @Override
     public View onCreateTopLeftView() {
         return null;
@@ -90,6 +106,8 @@ adapter.setAllData(colTitles, rowTitles, cells);
 adapter.enableFooter();//load more
 adapter.enableHeader();//load history
 ```
+
+If using setOnLoadMoreListener(...) and enableHeader() you must call addHistorySize(int) to tell ExcelPanel how many data have been added.
 
 #License
 
