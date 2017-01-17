@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -269,6 +270,22 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
         if (recyclerView.getTag() == null) {
             recyclerView.setTag("");//设置一个标记而已
             list.add(recyclerView);
+            recyclerView.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                        case MotionEvent.ACTION_POINTER_DOWN:
+                            for (RecyclerView rv : list) {
+                                rv.stopScroll();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
         }
     }
 
