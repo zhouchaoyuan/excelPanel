@@ -3,7 +3,6 @@
     <declare-styleable name="ExcelPanel">
         <attr name="left_cell_width" format="dimension" />
         <attr name="top_cell_height" format="dimension" />
-        <attr name="normal_cell_length" format="dimension" />
-        <attr name="cell_background" format="color"/>
+        <attr name="normal_cell_width" format="dimension" />
     </declare-styleable>
 </resources>

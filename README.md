@@ -1,12 +1,12 @@
 # excelPanel
-A two-dimensional RecyclerView. It can load historical data. It also can load more data.
+A two-dimensional RecyclerView. Not only can load historical data, but also can load future data.
 
 ![demo_gif](https://raw.githubusercontent.com/zhouchaoyuan/excelPanel/master/app/src/main/assets/roomFormDemo.gif)
 
 # Including in your project
 
 ```xml
-compile 'cn.zhouchaoyuan:excelpanel:1.0.0'
+compile 'cn.zhouchaoyuan:excelpanel:1.0.1'
 ```
 
 # Usage
@@ -18,9 +18,8 @@ compile 'cn.zhouchaoyuan:excelpanel:1.0.0'
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cell_background="@color/normal_cell_bg"
         app:left_cell_width="@dimen/room_status_cell_length"
-        app:normal_cell_length="@dimen/room_status_cell_length"
+        app:normal_cell_width="@dimen/room_status_cell_length"
         app:top_cell_height="@dimen/room_status_cell_length" />
 ```
 
@@ -28,15 +27,14 @@ Configure using xml attributes
 
 ```xml
 
-app:cell_background="@color/normal_cell_bg"              //container cell's background
-app:left_cell_width="@dimen/room_status_cell_length"     //left header cell's width
-app:normal_cell_length="@dimen/room_status_cell_length"  //container cell's width
-app:top_cell_height="@dimen/room_status_cell_length"     //top header cell's width
+app:left_cell_width     //left header cell's width
+app:normal_cell_width   //container cell's width, height is not must because the row's height will be equals to the maximum cell's height in that line
+app:top_cell_height     //top header cell's height
 
 ```
 
 
-###2、define your Custom Adapter
+###2、Define your Custom Adapter
 Your adapter must extends BaseExcelPanelAdapter and override seven methods show as follow:
 
 ```java
@@ -87,7 +85,7 @@ public class Adapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cell>{
 }
 ```
 
-###3、use your Adapter
+###3、Use your Adapter
 
 ```java
 //==============================
@@ -103,11 +101,15 @@ adapter = new CustomAdapter(this, blockListener);
 excelPanel.setAdapter(adapter);
 excelPanel.setOnLoadMoreListener(this);//your Activity or Fragment implement ExcelPanel.OnLoadMoreListener
 adapter.setAllData(colTitles, rowTitles, cells);
-adapter.enableFooter();//load more
-adapter.enableHeader();//load history
+adapter.enableFooter();//load more, you can also call disableFooter()----default
+adapter.enableHeader();//load history, you can also call disableHeader()----default
 ```
 
 If using setOnLoadMoreListener(...) and enableHeader() you must call addHistorySize(int) to tell ExcelPanel how many data have been added.
+
+#ChangeLog
+
+- V1.0.1--------------line i can be different to line i+1, but the same line's height must be equals
 
 #License
 

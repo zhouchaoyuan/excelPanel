@@ -21,10 +21,8 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
 
     public static final int LOADING_VIEW_WIDTH = 30;
 
-    private int leftTopColor;
     private int leftCellWidth;
     private int topCellHeight;
-    private int normalCellLength;
     protected int amountAxisY = 0;
 
     private Context mContext;
@@ -97,27 +95,10 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
 
     public void setLeftCellWidth(int leftCellWidth) {
         this.leftCellWidth = leftCellWidth;
-        if (mRecyclerViewAdapter != null && mRecyclerViewAdapter instanceof MajorRecyclerViewAdapter) {
-            ((MajorRecyclerViewAdapter) mRecyclerViewAdapter).setLeftCellWidth(leftCellWidth);
-        }
     }
 
     public void setTopCellHeight(int topCellHeight) {
         this.topCellHeight = topCellHeight;
-        if (mRecyclerViewAdapter != null && mRecyclerViewAdapter instanceof MajorRecyclerViewAdapter) {
-            ((MajorRecyclerViewAdapter) mRecyclerViewAdapter).setTopCellHeight(topCellHeight);
-        }
-    }
-
-    public void setNormalCellLength(int normalCellLength) {
-        this.normalCellLength = normalCellLength;
-        if (mRecyclerViewAdapter != null && mRecyclerViewAdapter instanceof MajorRecyclerViewAdapter) {
-            ((MajorRecyclerViewAdapter) mRecyclerViewAdapter).setNormalCellLength(normalCellLength);
-        }
-    }
-
-    public void setLeftTopColor(int color) {
-        this.leftTopColor = color;
     }
 
     public void setOnScrollListener(RecyclerView.OnScrollListener onScrollListener) {
@@ -167,11 +148,6 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
         this.excelPanel = excelPanel;
     }
 
-    /**
-     * 顶部加载历史的loading和占位View
-     *
-     * @return 一个和Loading控件一样宽度占位View
-     */
     protected View createTopStaticView() {
         View topStaticView = new View(mContext);
         int loadingWidth = Utils.dp2px(LOADING_VIEW_WIDTH, mContext);
@@ -180,11 +156,6 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
         return topStaticView;
     }
 
-    /**
-     * 主容器加载历史的loading和占位View
-     *
-     * @return Loading的View
-     */
     protected View createMajorLoadingView() {
         int loadingWidth = Utils.dp2px(LOADING_VIEW_WIDTH, mContext);
         LinearLayout loadingView = new LinearLayout(mContext);
@@ -239,6 +210,13 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
             mRecyclerViewAdapter.setFooterView(null);
             excelPanel.setHasFooter(false);
 
+        }
+    }
+
+    @Override
+    final public void onAfterBind(View view, int position, boolean isHeight, boolean isSet) {
+        if (excelPanel != null) {
+            excelPanel.onAfterBind(view, position, isHeight, isSet);
         }
     }
 }

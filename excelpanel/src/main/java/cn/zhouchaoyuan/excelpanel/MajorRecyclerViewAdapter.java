@@ -3,6 +3,7 @@ package cn.zhouchaoyuan.excelpanel;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,11 +16,8 @@ import java.util.List;
 
 public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
     private Context context;
-    private int leftCellWidth;
-    private int topCellHeight;
-    private int normalCellLength;
     protected int amountAxisY = 0;
-    private List<String> list;//一个虚假的list，让子Adapter走
+    private List<String> list;//a virtual list
     private OnExcelPanelListener excelPanelListener;
     protected RecyclerView.OnScrollListener onScrollListener;
     protected OnAddVerticalScrollListener onAddVerticalScrollListener;
@@ -28,18 +26,6 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
         super(context, list);
         this.context = context;
         this.excelPanelListener = excelPanelListener;
-    }
-
-    public void setTopCellHeight(int topCellHeight) {
-        this.topCellHeight = topCellHeight;
-    }
-
-    public void setNormalCellLength(int normalCellLength) {
-        this.normalCellLength = normalCellLength;
-    }
-
-    public void setLeftCellWidth(int leftCellWidth) {
-        this.leftCellWidth = leftCellWidth;
     }
 
     public void setOnScrollListener(RecyclerView.OnScrollListener onScrollListener) {
@@ -54,7 +40,7 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
     public void setData(List<M> data) {
         super.setData(data == null ? null : ((List) data.get(0)));
         if (data != null) {
-            if (list == null || list.size() >= data.size()) {//刷新或者刚进入
+            if (list == null || list.size() >= data.size()) {//refresh or first time
                 list = new ArrayList<>();
             }
             for (int i = list.size(); i < data.size(); i++) {
@@ -90,7 +76,7 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
         if (onAddVerticalScrollListener != null) {
             onAddVerticalScrollListener.addRecyclerView(viewHolder.recyclerView);
         }
-        fastScrollTo(amountAxisY, viewHolder.recyclerView);
+        ExcelPanel.fastScrollVertical(amountAxisY, viewHolder.recyclerView);
     }
 
     static class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
@@ -127,16 +113,12 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
         public void onBindNormalViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (excelPanelListener != null) {
                 excelPanelListener.onBindCellViewHolder(holder, position, verticalPosition);
+                //use to adjust height and width
+                holder.itemView.setTag(new Pair<>(position, verticalPosition));
+                excelPanelListener.onAfterBind(holder.itemView, position, true, false);
+                excelPanelListener.onAfterBind(holder.itemView, verticalPosition, false, false);
             }
         }
-    }
-
-    private void fastScrollTo(int amountAxis, RecyclerView recyclerView) {
-        int position = 0, width = normalCellLength;
-        position += amountAxis / width;
-        amountAxis %= width;
-        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        linearLayoutManager.scrollToPositionWithOffset(position, -amountAxis);
     }
 
     public void setAmountAxisY(int amountAxisY) {

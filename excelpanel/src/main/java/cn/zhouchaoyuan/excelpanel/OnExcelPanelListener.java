@@ -11,60 +11,70 @@ import android.view.ViewGroup;
 public interface OnExcelPanelListener {
 
     /**
-     * 创建表格里的Item绑定
+     * create normal cell's holder
      *
-     * @param parent   父容器
-     * @param viewType 布局类型
-     * @return ViewHolder
+     * @param parent   parent
+     * @param viewType viewType
+     * @return ViewHolder holder
      */
     RecyclerView.ViewHolder onCreateCellViewHolder(ViewGroup parent, int viewType);
 
     /**
-     * 创建表格里的Item绑定
+     * bind normal cell data
      *
-     * @param holder             ViewHolder
-     * @param verticalPosition   垂直方向的position
-     * @param horizontalPosition 横向position
+     * @param holder             holder
+     * @param verticalPosition   verticalPosition, first dimension
+     * @param horizontalPosition horizontalPosition, second dimension
      */
     void onBindCellViewHolder(RecyclerView.ViewHolder holder, int verticalPosition, int horizontalPosition);
 
     /**
-     * 创建TopHeader的Item绑定
+     * create topHeader cell's holder
      *
-     * @param parent   父容器
-     * @param viewType 布局类型
-     * @return ViewHolder
+     * @param parent   parent
+     * @param viewType viewType
+     * @return ViewHolder holder
      */
     RecyclerView.ViewHolder onCreateTopViewHolder(ViewGroup parent, int viewType);
 
     /**
-     * TopHeader的Item绑定
+     * bind topHeader cell's data
      *
      * @param holder   ViewHolder
-     * @param position 位置
+     * @param position position
      */
     void onBindTopViewHolder(RecyclerView.ViewHolder holder, int position);
 
     /**
-     * 创建LeftHeader的Item绑定
+     * create leftHeader cell's holder
      *
-     * @param parent   父容器
-     * @param viewType 布局类型
-     * @return ViewHolder
+     * @param parent   parent
+     * @param viewType viewType
+     * @return ViewHolder holder
      */
     RecyclerView.ViewHolder onCreateLeftViewHolder(ViewGroup parent, int viewType);
 
     /**
-     * LeftHeader的Item绑定
+     * bind leftHeader cell's data
      *
      * @param holder   ViewHolder
-     * @param position 位置
+     * @param position position
      */
     void onBindLeftViewHolder(RecyclerView.ViewHolder holder, int position);
 
 
     /**
-     * @return 左上角的View
+     * @return left-top's view
      */
     View onCreateTopLeftView();
+
+    /**
+     * use to adjust the height and width of the normal cell
+     *
+     * @param view     cell's view
+     * @param position horizontal or vertical position
+     * @param isHeight is it use to adjust height or not
+     * @param isSet    is it use to config height or width
+     */
+    void onAfterBind(View view, int position, boolean isHeight, boolean isSet);
 }

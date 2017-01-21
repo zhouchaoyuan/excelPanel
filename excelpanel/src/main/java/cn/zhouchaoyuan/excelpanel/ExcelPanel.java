@@ -2,26 +2,31 @@ package cn.zhouchaoyuan.excelpanel;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import cn.zhouchaoyuan.utils.Utils;
 
 /**
  * Created by zhouchaoyuan on 2016/12/11.
  * <p>
- * 一个类似Excel的控件，支持上下左右滑动且有左表头和上表头，没有分割线,
- * 需要用继承自 {@link cn.zhouchaoyuan.excelpanel.BaseExcelPanelAdapter} 的 Adapter 提供数据，
- * 如果设置了OnLoadMoreListener并且在onLoadHistory()触发了一些操作，需要调用addHistorySize()来通知加载了多少历史页，
- * 如果要重置excelPanel的状态到最开始，使用reset()方法
+ * A widget like Excel which can scroll in all directions but it have not split line.
+ * Your adapter extends {@link cn.zhouchaoyuan.excelpanel.BaseExcelPanelAdapter} can provide data to excelPanel.
+ * If you set OnLoadMoreListener and load historical data in onLoadHistory(), you must call {@link #addHistorySize(int) addHistorySize(int)}
+ * to tell ExcelPanel how many pages you have been added.
+ * If you want to reset ExcelPanel,just call {@link #reset() reset()}
  * </p>
  */
 
@@ -30,10 +35,9 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
     public static final int DEFAULT_LENGTH = 56;
     public static final int LOADING_VIEW_WIDTH = 30;
 
-    private int leftTopColor;
     private int leftCellWidth;
     private int topCellHeight;
-    private int normalCellLength;
+    private int normalCellWidth;
     private int loadingViewWidth;
     private int amountAxisX = 0;
     private int amountAxisY = 0;
@@ -45,27 +49,20 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
     protected RecyclerView leftRecyclerView;
     protected BaseExcelPanelAdapter excelPanelAdapter;
     private List<RecyclerView> list;
+    private static Map<Integer, Integer> indexHeight;
+    private static Map<Integer, Integer> indexWidth;
 
     private OnLoadMoreListener onLoadMoreListener;
-    private OnRecyclerItemClickListener onRecyclerItemClickListener;
-    private OnRecyclerItemLongClickListener onRecyclerItemLongClickListener;
-
-    public interface OnRecyclerItemClickListener {
-        boolean onRecyclerItemClick(RecyclerView recyclerView, View childView, int position);
-    }
-
-    public interface OnRecyclerItemLongClickListener {
-        void onRecyclerItemLongClick(RecyclerView recyclerView, View childView, int position);
-    }
 
     public interface OnLoadMoreListener {
         /**
-         * 当加载更多的loading标志出现时，可能会多次回调
+         * when the loading icon appeared, this method may be called many times
          */
         void onLoadMore();
 
         /**
-         * 当加载历史的loading标志出现时，可能会多次回调，这里加载了历史之后data会自动挪到第一个，调用者要控制一下
+         * when the loading icon appeared, this method may be called many times. The excelPanel will dislocation
+         * when the data have been added, you must call {@link #addHistorySize(int) addHistorySize(int)}.
          */
         void onLoadHistory();
     }
@@ -83,8 +80,7 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
         try {
             leftCellWidth = (int) a.getDimension(R.styleable.ExcelPanel_left_cell_width, Utils.dp2px(DEFAULT_LENGTH, getContext()));
             topCellHeight = (int) a.getDimension(R.styleable.ExcelPanel_top_cell_height, Utils.dp2px(DEFAULT_LENGTH, getContext()));
-            normalCellLength = (int) a.getDimension(R.styleable.ExcelPanel_normal_cell_length, Utils.dp2px(DEFAULT_LENGTH, getContext()));
-            leftTopColor = a.getColor(R.styleable.ExcelPanel_cell_background, Color.WHITE);
+            normalCellWidth = (int) a.getDimension(R.styleable.ExcelPanel_normal_cell_width, Utils.dp2px(DEFAULT_LENGTH, getContext()));
         } finally {
             a.recycle();
         }
@@ -95,7 +91,7 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
     private void initWidget() {
         list = new ArrayList<>();
 
-        //内容部分的RecyclerView
+        //content's RecyclerView
         mRecyclerView = createMajorContent();
         addView(mRecyclerView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         LayoutParams mlp = (LayoutParams) mRecyclerView.getLayoutParams();
@@ -103,14 +99,14 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
         mlp.topMargin = topCellHeight;
         mRecyclerView.setLayoutParams(mlp);
 
-        //顶部的RecyclerView
+        //top RecyclerView
         topRecyclerView = createTopHeader();
         addView(topRecyclerView, new LayoutParams(LayoutParams.WRAP_CONTENT, topCellHeight));
         LayoutParams tlp = (LayoutParams) topRecyclerView.getLayoutParams();
         tlp.leftMargin = leftCellWidth;
         topRecyclerView.setLayoutParams(tlp);
 
-        //左边的RecyclerView
+        //left RecyclerView
         leftRecyclerView = createLeftHeader();
         addRecyclerView(leftRecyclerView);
         addView(leftRecyclerView, new LayoutParams(leftCellWidth, LayoutParams.WRAP_CONTENT));
@@ -141,11 +137,6 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
         return recyclerView;
     }
 
-    /**
-     * 获取布局管理器,子类可重载
-     *
-     * @return 布局管理器
-     */
     protected RecyclerView.LayoutManager getLayoutManager() {
         if (null == mRecyclerView || null == mRecyclerView.getLayoutManager()) {
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -174,7 +165,7 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
     }
 
     /**
-     * 主容器滑动监听
+     * horizontal listener
      */
     private RecyclerView.OnScrollListener contentScrollListener
             = new RecyclerView.OnScrollListener() {
@@ -203,7 +194,7 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
     };
 
     /**
-     * 竖直滑动监听
+     * vertical listener
      */
     private RecyclerView.OnScrollListener leftScrollListener
             = new RecyclerView.OnScrollListener() {
@@ -217,17 +208,32 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
             super.onScrolled(recyclerView, dx, dy);
             amountAxisY += dy;
             for (RecyclerView recyclerView1 : list) {
-                fastScrollTo(amountAxisY, recyclerView1, 0, false);
+                fastScrollVertical(amountAxisY, recyclerView1);
             }
-            //让重用部分滚出来也到指定位置
             if (excelPanelAdapter != null) {
                 excelPanelAdapter.setAmountAxisY(amountAxisY);
             }
         }
     };
 
+    static void fastScrollVertical(int amountAxis, RecyclerView recyclerView) {
+        int total = 0, count = 0;
+        Iterator<Integer> iterator = indexHeight.keySet().iterator();
+        while (iterator.hasNext()) {
+            int height = indexHeight.get(iterator.next());
+            if (total + height >= amountAxis) {
+                break;
+            }
+            total += height;
+            count++;
+        }
+        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        //call this method the OnScrollListener's onScrolled will be called，but dx and dy always be zero.
+        linearLayoutManager.scrollToPositionWithOffset(count, -(amountAxis - total));
+    }
+
     private void fastScrollTo(int amountAxis, RecyclerView recyclerView, int offset, boolean hasHeader) {
-        int position = 0, width = normalCellLength;
+        int position = 0, width = normalCellWidth;
         if (amountAxis >= offset && hasHeader) {
             amountAxis -= offset;
             position++;
@@ -235,7 +241,7 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
         position += amountAxis / width;
         amountAxis %= width;
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        //通过下面这个方法滚动之后会调用OnScrollListener的onScrolled，但是dx，dy都是0
+        //call this method the OnScrollListener's onScrolled will be called，but dx and dy always be zero.
         linearLayoutManager.scrollToPositionWithOffset(position, -amountAxis);
     }
 
@@ -244,8 +250,6 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
             this.excelPanelAdapter = excelPanelAdapter;
             this.excelPanelAdapter.setLeftCellWidth(leftCellWidth);
             this.excelPanelAdapter.setTopCellHeight(topCellHeight);
-            this.excelPanelAdapter.setNormalCellLength(normalCellLength);
-            this.excelPanelAdapter.setLeftTopColor(leftTopColor);
             this.excelPanelAdapter.setOnScrollListener(leftScrollListener);
             this.excelPanelAdapter.setOnAddVerticalScrollListener(this);
             this.excelPanelAdapter.setExcelPanel(this);
@@ -268,7 +272,7 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
     @Override
     public void addRecyclerView(RecyclerView recyclerView) {
         if (recyclerView.getTag() == null) {
-            recyclerView.setTag("");//设置一个标记而已
+            recyclerView.setTag("");//just a tag
             list.add(recyclerView);
             recyclerView.setOnTouchListener(new OnTouchListener() {
                 @Override
@@ -289,19 +293,29 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
         }
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        indexHeight = new TreeMap<>();
+        indexWidth = new TreeMap<>();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        list.clear();
+        indexWidth.clear();
+        indexHeight.clear();
+        indexHeight = null;
+        indexWidth = null;
+        list = null;
+    }
+
     /**
-     * @param dx 横向滑动距离
+     * @param dx horizontal distance to scroll
      */
     void scrollBy(int dx) {
         contentScrollListener.onScrolled(mRecyclerView, dx, 0);
-    }
-
-    public void setOnRecyclerItemLongClickListener(OnRecyclerItemLongClickListener onRecyclerItemLongClickListener) {
-        this.onRecyclerItemLongClickListener = onRecyclerItemLongClickListener;
-    }
-
-    public void setOnRecyclerItemClickListener(OnRecyclerItemClickListener onRecyclerItemClickListener) {
-        this.onRecyclerItemClickListener = onRecyclerItemClickListener;
     }
 
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
@@ -326,8 +340,13 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
             excelPanelAdapter.disableHeader();
         }
         if (!Utils.isEmpty(list)) {
+            for (RecyclerView recyclerView : list) {
+                recyclerView.setTag(null);
+            }
             list.clear();
         }
+        indexHeight.clear();
+        indexWidth.clear();
         list.add(leftRecyclerView);
         amountAxisY = 0;
         amountAxisX = 0;
@@ -335,7 +354,7 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
 
     public void addHistorySize(int size) {
         if (size > 0) {
-            contentScrollListener.onScrolled(topRecyclerView, normalCellLength * size, 0);
+            contentScrollListener.onScrolled(topRecyclerView, normalCellWidth * size, 0);
         }
     }
 
@@ -350,5 +369,60 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
             return firstVisibleItem;
         }
         return position;
+    }
+
+    /**
+     * use to adjust the height and width of the normal cell
+     *
+     * @param view     cell's view
+     * @param position horizontal or vertical position
+     * @param isHeight is it use to adjust height or not
+     * @param isSet    is it use to config height or width
+     */
+    public void onAfterBind(View view, int position, boolean isHeight, boolean isSet) {
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        if (isHeight) {
+            if (indexHeight.get(position) != null) {
+                int height = indexHeight.get(position);
+                if (height > layoutParams.height) {
+                    layoutParams.height = height;
+                    view.setLayoutParams(layoutParams);//must, because this haven't been added to it's parent
+                    adjustHeight(position, height);
+                } else {
+                    if (isSet) {
+                        indexHeight.put(position, layoutParams.height);
+                        adjustHeight(position, layoutParams.height);
+                    }
+                }
+            } else {
+                indexHeight.put(position, layoutParams.height);
+            }
+        } else {
+            //adjust width ???
+        }
+    }
+
+    /**
+     * set the height of the line position to height
+     *
+     * @param position which line
+     * @param height   the line's height
+     */
+    private void adjustHeight(int position, int height) {
+        for (RecyclerView recyclerView : list) {
+            for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                View view1 = recyclerView.getChildAt(i);
+                if (view1.getTag() != null && view1.getTag() instanceof Pair) {
+                    Pair pair = (Pair) view1.getTag();
+                    int index = (int) pair.first;
+                    ViewGroup.LayoutParams lp = view1.getLayoutParams();
+                    if (index == position) {
+                        lp.height = height;
+                        view1.setLayoutParams(lp);
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
