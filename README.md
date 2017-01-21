@@ -2,6 +2,7 @@
 A two-dimensional RecyclerView. Not only can load historical data, but also can load future data.
 
 ![demo_gif](https://raw.githubusercontent.com/zhouchaoyuan/excelPanel/master/app/src/main/assets/roomFormDemo.gif)
+![demo_gif_adjust_height](https://raw.githubusercontent.com/zhouchaoyuan/excelPanel/master/app/src/main/assets/roomFormDemoAdjustHeight.gif)
 
 # Including in your project
 
