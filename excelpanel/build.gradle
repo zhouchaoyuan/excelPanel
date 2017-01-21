@@ -34,10 +34,10 @@ dependencies {
 
 //添加
 publish {
-    userOrg = 'chaoyuan'//bintray.com用户名
-    groupId = 'cn.zhouchaoyuan'//jcenter上的路径
-    artifactId = 'excelpanel'//项目名称
-    publishVersion = '1.0.0'//版本号
-    desc = 'A two-dimensional RecyclerView，it can load historical data，it also can load more data。'//描述
-    website = 'https://github.com/zhouchaoyuan/excelPanel'//网站
+    userOrg = 'chaoyuan'//user name of bintray.com
+    groupId = 'cn.zhouchaoyuan'//jcenter's url
+    artifactId = 'excelpanel'//project name
+    publishVersion = '1.0.1'//version code
+    desc = 'A two-dimensional RecyclerView. Not only can load historical data, but also can load future data.'//des
+    website = 'https://github.com/zhouchaoyuan/excelPanel'//website
 }

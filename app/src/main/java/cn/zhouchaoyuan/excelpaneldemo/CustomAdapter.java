@@ -13,6 +13,7 @@ import cn.zhouchaoyuan.excelpanel.BaseExcelPanelAdapter;
 import cn.zhouchaoyuan.excelpaneldemo.bean.Cell;
 import cn.zhouchaoyuan.excelpaneldemo.bean.ColTitle;
 import cn.zhouchaoyuan.excelpaneldemo.bean.RowTitle;
+import cn.zhouchaoyuan.utils.Utils;
 
 /**
  * Created by zhouchaoyuan on 2017/1/14.
@@ -29,7 +30,7 @@ public class CustomAdapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cel
         this.blockListener = blockListener;
     }
 
-    //=========================================内容格子===========================================
+    //=========================================content's cell===========================================
     @Override
     public RecyclerView.ViewHolder onCreateCellViewHolder(ViewGroup parent, int viewType) {
         View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.room_status_normal_cell, parent, false);
@@ -78,7 +79,7 @@ public class CustomAdapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cel
     }
 
 
-    //=========================================顶部格子===========================================
+    //=========================================top cell===========================================
     @Override
     public RecyclerView.ViewHolder onCreateTopViewHolder(ViewGroup parent, int viewType) {
         View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.room_status_top_header_item, parent, false);
@@ -112,7 +113,7 @@ public class CustomAdapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cel
         }
     }
 
-    //=========================================左边格子===========================================
+    //=========================================left cell===========================================
     @Override
     public RecyclerView.ViewHolder onCreateLeftViewHolder(ViewGroup parent, int viewType) {
         View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.room_status_left_header_item, parent, false);
@@ -129,21 +130,29 @@ public class CustomAdapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cel
         LeftHolder viewHolder = (LeftHolder) holder;
         viewHolder.roomNumberLabel.setText(colTitle.getRoomNumber());
         viewHolder.roomTypeLabel.setText(colTitle.getRoomTypeName());
+        //test different height
+        ViewGroup.LayoutParams lp = viewHolder.root.getLayoutParams();
+        lp.height = Utils.dp2px(56, context) + Utils.dp2px(height[position % height.length], context);
+        viewHolder.root.setLayoutParams(lp);
     }
+
+    public static int[] height = {23, 45, 12, 32, 9, 1, 5};//use for different height
 
     static class LeftHolder extends RecyclerView.ViewHolder {
 
         public final TextView roomNumberLabel;
         public final TextView roomTypeLabel;
+        public final View root;
 
         public LeftHolder(View itemView) {
             super(itemView);
+            root = itemView.findViewById(R.id.root);
             roomNumberLabel = (TextView) itemView.findViewById(R.id.room_number_label);
             roomTypeLabel = (TextView) itemView.findViewById(R.id.room_type_label);
         }
     }
 
-    //=========================================左上角格子===========================================
+    //=========================================left-top cell===========================================
     @Override
     public View onCreateTopLeftView() {
         return LayoutInflater.from(context).inflate(R.layout.room_status_normal_cell, null);

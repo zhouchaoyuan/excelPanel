@@ -187,7 +187,6 @@ public class MainActivity extends AppCompatActivity implements ExcelPanel.OnLoad
                 Cell cell = new Cell();
                 Random random = new Random();
                 int number = random.nextInt(6);
-                System.out.println(number);
                 if (number == 1 || number == 2 || number == 3) {
                     cell.setStatus(number);
                     cell.setChannelName(CHANNEL[random.nextInt(CHANNEL.length)]);
