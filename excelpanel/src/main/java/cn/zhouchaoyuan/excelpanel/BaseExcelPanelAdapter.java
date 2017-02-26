@@ -68,6 +68,7 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
         setTopData(topData);
         setMajorData(majorData);
         excelPanel.scrollBy(0);
+        excelPanel.fastScrollVerticalLeft();
         if (!Utils.isEmpty(leftData) && !Utils.isEmpty(topData) && excelPanel != null
                 && !Utils.isEmpty(majorData) && leftTopView == null) {
             leftTopView = onCreateTopLeftView();
@@ -214,9 +215,30 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
     }
 
     @Override
-    final public void onAfterBind(View view, int position, boolean isHeight, boolean isSet) {
+    public void onAfterBind(RecyclerView.ViewHolder holder, int position, boolean isHeight, boolean isSet) {
         if (excelPanel != null) {
-            excelPanel.onAfterBind(view, position, isHeight, isSet);
+            excelPanel.onAfterBind(holder, position, isHeight, isSet);
         }
+    }
+
+    @Override
+    public int getCellItemViewType(int verticalPosition, int horizontalPosition) {
+        return RecyclerViewAdapter.TYPE_NORMAL;
+    }
+
+    @Override
+    public int getLeftItemViewType(int position) {
+        return RecyclerViewAdapter.TYPE_NORMAL;
+    }
+
+    @Override
+    public int getTopItemViewType(int position) {
+        return RecyclerViewAdapter.TYPE_NORMAL;
+    }
+
+    public final void notifyDataSetChanged() {
+        topRecyclerViewAdapter.notifyDataSetChanged();
+        leftRecyclerViewAdapter.notifyDataSetChanged();
+        ((MajorRecyclerViewAdapter) mRecyclerViewAdapter).customNotifyDataSetChanged();
     }
 }

@@ -20,6 +20,15 @@ public class LeftRecyclerViewAdapter<L> extends RecyclerViewAdapter<L> {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        int viewType = super.getItemViewType(position);
+        if(viewType == TYPE_NORMAL){
+            viewType = excelPanelListener.getLeftItemViewType(position);
+        }
+        return viewType;
+    }
+
+    @Override
     public RecyclerView.ViewHolder onCreateNormalViewHolder(ViewGroup parent, int viewType) {
         if (excelPanelListener != null) {
             return excelPanelListener.onCreateLeftViewHolder(parent, viewType);
@@ -33,8 +42,8 @@ public class LeftRecyclerViewAdapter<L> extends RecyclerViewAdapter<L> {
         if (excelPanelListener != null) {
             excelPanelListener.onBindLeftViewHolder(holder, position);
             //use to adjust height
-            holder.itemView.setTag(new Pair<>(position, 0));
-            excelPanelListener.onAfterBind(holder.itemView, position, true, true);
+            holder.itemView.setTag(ExcelPanel.TAG_KEY, new Pair<>(position, 0));
+            excelPanelListener.onAfterBind(holder, position, true, true);
         }
     }
 }

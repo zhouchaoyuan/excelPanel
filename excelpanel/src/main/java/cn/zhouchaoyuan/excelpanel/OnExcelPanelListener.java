@@ -69,12 +69,32 @@ public interface OnExcelPanelListener {
     View onCreateTopLeftView();
 
     /**
+     * Return the view type of the item at <code>verticalPosition's</code> row
+     * <code>horizontalPosition's</code> column for the purposes of view recycling.
+     * <p>
+     * <p>The default implementation of this method returns 2, making the assumption of
+     * a single view type for the adapter. Unlike ListView adapters, types need not
+     * be contiguous. Consider using id resources to uniquely identify item view types.
+     *
+     * @param verticalPosition   the row position to query
+     * @param horizontalPosition the column position to query
+     * @return integer value identifying the type of the view needed to represent the item at
+     * <code>verticalPosition's</code> row <code>horizontalPosition's</code> column.
+     * Type codes need not be contiguous.
+     */
+    int getCellItemViewType(int verticalPosition, int horizontalPosition);
+
+    int getTopItemViewType(int position);
+
+    int getLeftItemViewType(int position);
+
+    /**
      * use to adjust the height and width of the normal cell
      *
-     * @param view     cell's view
+     * @param holder     cell's holder
      * @param position horizontal or vertical position
      * @param isHeight is it use to adjust height or not
      * @param isSet    is it use to config height or width
      */
-    void onAfterBind(View view, int position, boolean isHeight, boolean isSet);
+    void onAfterBind(RecyclerView.ViewHolder holder, int position, boolean isHeight, boolean isSet);
 }
