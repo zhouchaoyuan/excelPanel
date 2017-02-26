@@ -2,6 +2,7 @@ package cn.zhouchaoyuan.excelpanel;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -9,6 +10,7 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
@@ -30,8 +32,9 @@ import cn.zhouchaoyuan.utils.Utils;
  * </p>
  */
 
-public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListener {
+public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListener, ViewTreeObserver.OnGlobalLayoutListener {
 
+    public static final int TAG_KEY = R.id.lib_excel_panel_tag_key;
     public static final int DEFAULT_LENGTH = 56;
     public static final int LOADING_VIEW_WIDTH = 30;
 
@@ -41,9 +44,12 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
     private int loadingViewWidth;
     private int amountAxisX = 0;
     private int amountAxisY = 0;
+    private int dividerHeight;
     private boolean hasHeader;
     private boolean hasFooter;
+    private boolean dividerLineVisible;
 
+    protected View dividerLine;
     protected RecyclerView mRecyclerView;
     protected RecyclerView topRecyclerView;
     protected RecyclerView leftRecyclerView;
@@ -84,6 +90,8 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
         } finally {
             a.recycle();
         }
+        indexHeight = new TreeMap<>();
+        indexWidth = new TreeMap<>();
         loadingViewWidth = Utils.dp2px(LOADING_VIEW_WIDTH, getContext());
         initWidget();
     }
@@ -114,6 +122,23 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
         llp.topMargin = topCellHeight;
         leftRecyclerView.setLayoutParams(llp);
 
+        dividerLine = createDividerToLeftHeader();
+        addView(dividerLine, new ViewGroup.LayoutParams(1, ViewGroup.LayoutParams.WRAP_CONTENT));
+        LayoutParams lineLp = (LayoutParams) dividerLine.getLayoutParams();
+        lineLp.leftMargin = leftCellWidth;
+        dividerLine.setLayoutParams(lineLp);
+        getViewTreeObserver().addOnGlobalLayoutListener(this);
+
+    }
+
+    @Override
+    public void onGlobalLayout() {
+        if (getMeasuredHeight() != dividerHeight) {
+            getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        }
+        LayoutParams lineLp1 = (LayoutParams) dividerLine.getLayoutParams();
+        dividerHeight = lineLp1.height = getMeasuredHeight();
+        dividerLine.setLayoutParams(lineLp1);
     }
 
     protected RecyclerView createTopHeader() {
@@ -135,6 +160,13 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
         recyclerView.setLayoutManager(getLayoutManager());
         recyclerView.addOnScrollListener(contentScrollListener);
         return recyclerView;
+    }
+
+    protected View createDividerToLeftHeader() {
+        View view = new View(getContext());
+        view.setVisibility(GONE);
+        view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_line));
+        return view;
     }
 
     protected RecyclerView.LayoutManager getLayoutManager() {
@@ -190,6 +222,11 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
             if (amountAxisX < loadingViewWidth && onLoadMoreListener != null && hasHeader) {
                 onLoadMoreListener.onLoadHistory();
             }
+            if (((hasHeader && amountAxisX > loadingViewWidth) || (!hasHeader && amountAxisX > 0)) && dividerLineVisible) {
+                dividerLine.setVisibility(VISIBLE);
+            } else {
+                dividerLine.setVisibility(GONE);
+            }
         }
     };
 
@@ -215,6 +252,10 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
             }
         }
     };
+
+    void fastScrollVerticalLeft(){
+        fastScrollVertical(amountAxisY, leftRecyclerView);
+    }
 
     static void fastScrollVertical(int amountAxis, RecyclerView recyclerView) {
         int total = 0, count = 0;
@@ -296,8 +337,12 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        indexHeight = new TreeMap<>();
-        indexWidth = new TreeMap<>();
+        if (indexHeight == null) {
+            indexHeight = new TreeMap<>();
+        }
+        if (indexWidth == null) {
+            indexWidth = new TreeMap<>();
+        }
     }
 
     @Override
@@ -345,11 +390,18 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
             }
             list.clear();
         }
+        if (indexHeight == null) {
+            indexHeight = new TreeMap<>();
+        }
+        if (indexWidth == null) {
+            indexWidth = new TreeMap<>();
+        }
         indexHeight.clear();
         indexWidth.clear();
         list.add(leftRecyclerView);
         amountAxisY = 0;
         amountAxisX = 0;
+        getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
     public void addHistorySize(int size) {
@@ -374,14 +426,18 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
     /**
      * use to adjust the height and width of the normal cell
      *
-     * @param view     cell's view
+     * @param holder   cell's holder
      * @param position horizontal or vertical position
      * @param isHeight is it use to adjust height or not
      * @param isSet    is it use to config height or width
      */
-    public void onAfterBind(View view, int position, boolean isHeight, boolean isSet) {
+    public void onAfterBind(RecyclerView.ViewHolder holder, int position, boolean isHeight, boolean isSet) {
+        View view = holder.itemView;
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         if (isHeight) {
+            if (indexHeight == null) {
+                indexHeight = new TreeMap<>();
+            }
             if (indexHeight.get(position) != null) {
                 int height = indexHeight.get(position);
                 if (height > layoutParams.height) {
@@ -412,8 +468,8 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
         for (RecyclerView recyclerView : list) {
             for (int i = 0; i < recyclerView.getChildCount(); i++) {
                 View view1 = recyclerView.getChildAt(i);
-                if (view1.getTag() != null && view1.getTag() instanceof Pair) {
-                    Pair pair = (Pair) view1.getTag();
+                if (view1.getTag(TAG_KEY) != null && view1.getTag(TAG_KEY) instanceof Pair) {
+                    Pair pair = (Pair) view1.getTag(TAG_KEY);
                     int index = (int) pair.first;
                     ViewGroup.LayoutParams lp = view1.getLayoutParams();
                     if (index == position) {
@@ -424,5 +480,9 @@ public class ExcelPanel extends FrameLayout implements OnAddVerticalScrollListen
                 }
             }
         }
+    }
+
+    public void enableDividerLine(boolean visible) {
+        dividerLineVisible = visible;
     }
 }

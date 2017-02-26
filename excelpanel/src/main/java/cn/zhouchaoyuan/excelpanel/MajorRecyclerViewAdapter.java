@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.zhouchaoyuan.utils.Utils;
+
 /**
  * Created by zhouchaoyuan on 2016/12/11.
  */
@@ -18,6 +20,7 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
     private Context context;
     protected int amountAxisY = 0;
     private List<String> list;//a virtual list
+    private List<RecyclerView.Adapter> adapterList;
     private OnExcelPanelListener excelPanelListener;
     protected RecyclerView.OnScrollListener onScrollListener;
     protected OnAddVerticalScrollListener onAddVerticalScrollListener;
@@ -25,6 +28,7 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
     public MajorRecyclerViewAdapter(Context context, List<M> list, OnExcelPanelListener excelPanelListener) {
         super(context, list);
         this.context = context;
+        adapterList = new ArrayList<>();
         this.excelPanelListener = excelPanelListener;
     }
 
@@ -68,6 +72,7 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
         RecyclerViewViewHolder viewHolder = (RecyclerViewViewHolder) holder;
         ContentRecyclerAdapter contentRecyclerAdapter =
                 new ContentRecyclerAdapter(context, position, excelPanelListener);
+        adapterList.add(contentRecyclerAdapter);
         contentRecyclerAdapter.setData(list);
         viewHolder.recyclerView.setAdapter(contentRecyclerAdapter);
 
@@ -101,6 +106,15 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
         }
 
         @Override
+        public int getItemViewType(int position) {
+            int viewType = super.getItemViewType(position);
+            if(viewType == TYPE_NORMAL){
+                viewType = excelPanelListener.getCellItemViewType(position, verticalPosition);
+            }
+            return viewType;
+        }
+
+        @Override
         public RecyclerView.ViewHolder onCreateNormalViewHolder(ViewGroup parent, int viewType) {
             if (excelPanelListener != null) {
                 return excelPanelListener.onCreateCellViewHolder(parent, viewType);
@@ -114,14 +128,22 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
             if (excelPanelListener != null) {
                 excelPanelListener.onBindCellViewHolder(holder, position, verticalPosition);
                 //use to adjust height and width
-                holder.itemView.setTag(new Pair<>(position, verticalPosition));
-                excelPanelListener.onAfterBind(holder.itemView, position, true, false);
-                excelPanelListener.onAfterBind(holder.itemView, verticalPosition, false, false);
+                holder.itemView.setTag(ExcelPanel.TAG_KEY, new Pair<>(position, verticalPosition));
+                excelPanelListener.onAfterBind(holder, position, true, false);
+                excelPanelListener.onAfterBind(holder, verticalPosition, false, false);
             }
         }
     }
 
     public void setAmountAxisY(int amountAxisY) {
         this.amountAxisY = amountAxisY;
+    }
+
+    public void customNotifyDataSetChanged() {
+        if (!Utils.isEmpty(adapterList)) {
+            for (RecyclerView.Adapter adapter : adapterList) {
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 }

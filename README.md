@@ -7,7 +7,7 @@ A two-dimensional RecyclerView. Not only can load historical data, but also can 
 # Including in your project
 
 ```xml
-compile 'cn.zhouchaoyuan:excelpanel:1.0.1'
+compile 'cn.zhouchaoyuan:excelpanel:1.0.2'
 ```
 
 # Usage
@@ -28,9 +28,9 @@ Configure using xml attributes
 
 ```xml
 
-app:left_cell_width     //left header cell's width
-app:normal_cell_width   //container cell's width, height is not must because the row's height will be equals to the maximum cell's height in that line
-app:top_cell_height     //top header cell's height
+app:left_cell_width     //left header cell's width, not support wrap_content
+app:normal_cell_width   //container cell's width, not support wrap_content
+app:top_cell_height     //top header cell's height, not support wrap_content
 
 ```
 
@@ -111,6 +111,7 @@ If using setOnLoadMoreListener(...) and enableHeader() you must call addHistoryS
 #ChangeLog
 
 - V1.0.1--------------line i can be different to line i+1, but the same line's height must be equals
+- V1.0.2--------------support different viewType which using to config different row with different height
 
 #License
 

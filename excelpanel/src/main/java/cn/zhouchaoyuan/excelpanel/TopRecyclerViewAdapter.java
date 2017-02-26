@@ -21,6 +21,15 @@ public class TopRecyclerViewAdapter<T> extends RecyclerViewAdapter<T> {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        int viewType = super.getItemViewType(position);
+        if(viewType == TYPE_NORMAL){
+            viewType = excelPanelListener.getTopItemViewType(position);
+        }
+        return viewType;
+    }
+
+    @Override
     public RecyclerView.ViewHolder onCreateNormalViewHolder(ViewGroup parent, int viewType) {
         if (excelPanelListener != null) {
             return excelPanelListener.onCreateTopViewHolder(parent, viewType);
@@ -34,8 +43,8 @@ public class TopRecyclerViewAdapter<T> extends RecyclerViewAdapter<T> {
         if (excelPanelListener != null) {
             excelPanelListener.onBindTopViewHolder(holder, position);
             //use to adjust width
-            holder.itemView.setTag(new Pair<>(0, position));
-            excelPanelListener.onAfterBind(holder.itemView, position, false, true);
+            holder.itemView.setTag(ExcelPanel.TAG_KEY, new Pair<>(0, position));
+            excelPanelListener.onAfterBind(holder, position, false, true);
         }
     }
 }

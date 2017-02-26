@@ -37,7 +37,7 @@ publish {
     userOrg = 'chaoyuan'//user name of bintray.com
     groupId = 'cn.zhouchaoyuan'//jcenter's url
     artifactId = 'excelpanel'//project name
-    publishVersion = '1.0.1'//version code
+    publishVersion = '1.0.2'//version code
     desc = 'A two-dimensional RecyclerView. Not only can load historical data, but also can load future data.'//des
     website = 'https://github.com/zhouchaoyuan/excelPanel'//website
 }
