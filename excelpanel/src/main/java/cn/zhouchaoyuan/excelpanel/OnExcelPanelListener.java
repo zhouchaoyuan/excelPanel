@@ -87,14 +87,4 @@ public interface OnExcelPanelListener {
     int getTopItemViewType(int position);
 
     int getLeftItemViewType(int position);
-
-    /**
-     * use to adjust the height and width of the normal cell
-     *
-     * @param holder     cell's holder
-     * @param position horizontal or vertical position
-     * @param isHeight is it use to adjust height or not
-     * @param isSet    is it use to config height or width
-     */
-    void onAfterBind(RecyclerView.ViewHolder holder, int position, boolean isHeight, boolean isSet);
 }

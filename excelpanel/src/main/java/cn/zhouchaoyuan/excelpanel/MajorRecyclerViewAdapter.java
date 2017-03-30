@@ -3,7 +3,6 @@ package cn.zhouchaoyuan.excelpanel;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,7 +22,6 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
     private List<RecyclerView.Adapter> adapterList;
     private OnExcelPanelListener excelPanelListener;
     protected RecyclerView.OnScrollListener onScrollListener;
-    protected OnAddVerticalScrollListener onAddVerticalScrollListener;
 
     public MajorRecyclerViewAdapter(Context context, List<M> list, OnExcelPanelListener excelPanelListener) {
         super(context, list);
@@ -34,10 +32,6 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
 
     public void setOnScrollListener(RecyclerView.OnScrollListener onScrollListener) {
         this.onScrollListener = onScrollListener;
-    }
-
-    public void setOnAddVerticalScrollListener(OnAddVerticalScrollListener onAddVerticalScrollListener) {
-        this.onAddVerticalScrollListener = onAddVerticalScrollListener;
     }
 
     @Override
@@ -78,9 +72,6 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
 
         viewHolder.recyclerView.removeOnScrollListener(onScrollListener);
         viewHolder.recyclerView.addOnScrollListener(onScrollListener);
-        if (onAddVerticalScrollListener != null) {
-            onAddVerticalScrollListener.addRecyclerView(viewHolder.recyclerView);
-        }
         ExcelPanel.fastScrollVertical(amountAxisY, viewHolder.recyclerView);
     }
 
@@ -127,10 +118,6 @@ public class MajorRecyclerViewAdapter<M> extends RecyclerViewAdapter<M> {
         public void onBindNormalViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (excelPanelListener != null) {
                 excelPanelListener.onBindCellViewHolder(holder, position, verticalPosition);
-                //use to adjust height and width
-                holder.itemView.setTag(ExcelPanel.TAG_KEY, new Pair<>(position, verticalPosition));
-                excelPanelListener.onAfterBind(holder, position, true, false);
-                excelPanelListener.onAfterBind(holder, verticalPosition, false, false);
             }
         }
     }

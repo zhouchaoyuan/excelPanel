@@ -13,7 +13,6 @@ import cn.zhouchaoyuan.excelpanel.BaseExcelPanelAdapter;
 import cn.zhouchaoyuan.excelpaneldemo.bean.Cell;
 import cn.zhouchaoyuan.excelpaneldemo.bean.ColTitle;
 import cn.zhouchaoyuan.excelpaneldemo.bean.RowTitle;
-import cn.zhouchaoyuan.utils.Utils;
 
 /**
  * Created by zhouchaoyuan on 2017/1/14.
@@ -130,13 +129,9 @@ public class CustomAdapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cel
         LeftHolder viewHolder = (LeftHolder) holder;
         viewHolder.roomNumberLabel.setText(colTitle.getRoomNumber());
         viewHolder.roomTypeLabel.setText(colTitle.getRoomTypeName());
-        //test different height
         ViewGroup.LayoutParams lp = viewHolder.root.getLayoutParams();
-        lp.height = Utils.dp2px(56, context) + Utils.dp2px(height[position % height.length], context);
         viewHolder.root.setLayoutParams(lp);
     }
-
-    public static int[] height = {23, 45, 12, 32, 9, 1, 5};//use for different height
 
     static class LeftHolder extends RecyclerView.ViewHolder {
 

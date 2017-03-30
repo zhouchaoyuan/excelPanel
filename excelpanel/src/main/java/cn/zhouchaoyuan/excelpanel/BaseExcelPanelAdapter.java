@@ -32,7 +32,6 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
     private View leftTopView;
     private ExcelPanel excelPanel;
     protected RecyclerView.OnScrollListener onScrollListener;
-    protected OnAddVerticalScrollListener onAddVerticalScrollListener;
     protected List<T> topData;
     protected List<L> leftData;
     protected List<List<M>> majorData;
@@ -106,13 +105,6 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
         this.onScrollListener = onScrollListener;
         if (mRecyclerViewAdapter != null && mRecyclerViewAdapter instanceof MajorRecyclerViewAdapter) {
             ((MajorRecyclerViewAdapter) mRecyclerViewAdapter).setOnScrollListener(onScrollListener);
-        }
-    }
-
-    public void setOnAddVerticalScrollListener(OnAddVerticalScrollListener onAddVerticalScrollListener) {
-        this.onAddVerticalScrollListener = onAddVerticalScrollListener;
-        if (mRecyclerViewAdapter != null && mRecyclerViewAdapter instanceof MajorRecyclerViewAdapter) {
-            ((MajorRecyclerViewAdapter) mRecyclerViewAdapter).setOnAddVerticalScrollListener(onAddVerticalScrollListener);
         }
     }
 
@@ -211,13 +203,6 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
             mRecyclerViewAdapter.setFooterView(null);
             excelPanel.setHasFooter(false);
 
-        }
-    }
-
-    @Override
-    public void onAfterBind(RecyclerView.ViewHolder holder, int position, boolean isHeight, boolean isSet) {
-        if (excelPanel != null) {
-            excelPanel.onAfterBind(holder, position, isHeight, isSet);
         }
     }
 

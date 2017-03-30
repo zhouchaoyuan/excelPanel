@@ -12,4 +12,7 @@
     <color name="booking">#f9266f</color>
     <color name="staying">#64d8ef</color>
     <color name="left">#a981ff</color>
+    <color name="bg_color">#FF99DCD7</color>
+    <color name="tab_indicator_color">#66aea9</color>
+    <color name="tab_text_color">#74c6c0</color>
 </resources>

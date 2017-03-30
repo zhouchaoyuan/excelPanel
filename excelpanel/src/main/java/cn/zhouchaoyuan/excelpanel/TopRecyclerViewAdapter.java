@@ -2,7 +2,6 @@ package cn.zhouchaoyuan.excelpanel;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.ViewGroup;
 
 import java.util.List;
@@ -42,9 +41,6 @@ public class TopRecyclerViewAdapter<T> extends RecyclerViewAdapter<T> {
     public void onBindNormalViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (excelPanelListener != null) {
             excelPanelListener.onBindTopViewHolder(holder, position);
-            //use to adjust width
-            holder.itemView.setTag(ExcelPanel.TAG_KEY, new Pair<>(0, position));
-            excelPanelListener.onAfterBind(holder, position, false, true);
         }
     }
 }
