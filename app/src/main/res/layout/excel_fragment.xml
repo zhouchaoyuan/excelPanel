@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/excel_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.zhouchaoyuan.excelpaneldemo.MainActivity">
+
+    <cn.zhouchaoyuan.excelpanel.ExcelPanel
+        android:id="@+id/content_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:left_cell_width="@dimen/room_status_cell_length"
+        app:normal_cell_width="@dimen/room_status_cell_length"
+        app:top_cell_height="@dimen/room_status_cell_length" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+</FrameLayout>

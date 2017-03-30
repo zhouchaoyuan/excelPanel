@@ -7,7 +7,7 @@ A two-dimensional RecyclerView. Not only can load historical data, but also can 
 # Including in your project
 
 ```xml
-compile 'cn.zhouchaoyuan:excelpanel:1.0.2'
+compile 'cn.zhouchaoyuan:excelpanel:1.0.3'
 ```
 
 # Usage
@@ -112,6 +112,7 @@ If using setOnLoadMoreListener(...) and enableHeader() you must call addHistoryS
 
 - V1.0.1--------------line i can be different to line i+1, but the same line's height must be equals
 - V1.0.2--------------support different viewType which using to config different row with different height
+- V1.0.3--------------remove adjust height, fix bug when excelPanel in ViewPager
 
 #License
 
