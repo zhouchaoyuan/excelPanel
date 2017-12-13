@@ -2,16 +2,14 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
     buildTypes {
@@ -27,17 +25,22 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:24.0.0'
-    compile 'com.android.support:recyclerview-v7:24.0.0'
+    compile 'com.android.support:appcompat-v7:26.0.2'
+    compile 'com.android.support:recyclerview-v7:26.0.2'
     testCompile 'junit:junit:4.12'
 }
 
-//添加
 publish {
     userOrg = 'chaoyuan'//user name of bintray.com
     groupId = 'cn.zhouchaoyuan'//jcenter's url
     artifactId = 'excelpanel'//project name
-    publishVersion = '1.0.3'//version code
+    publishVersion = '1.0.4'//version code
     desc = 'A two-dimensional RecyclerView. Not only can load historical data, but also can load future data.'//des
     website = 'https://github.com/zhouchaoyuan/excelPanel'//website
+}
+
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
 }
