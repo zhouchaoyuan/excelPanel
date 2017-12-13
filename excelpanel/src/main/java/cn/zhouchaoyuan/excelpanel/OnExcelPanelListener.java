@@ -87,4 +87,12 @@ public interface OnExcelPanelListener {
     int getTopItemViewType(int position);
 
     int getLeftItemViewType(int position);
+
+    /**
+     * use to record the height of the row
+     *
+     * @param holder     cell's holder
+     * @param position horizontal or vertical position
+     */
+    void onAfterBind(RecyclerView.ViewHolder holder, int position);
 }

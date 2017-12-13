@@ -159,7 +159,7 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
 
         ProgressBar progressBar = new ProgressBar(mContext);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(new ViewGroup.LayoutParams(
-                Utils.dp2px(16, mContext), Utils.dp2px(16, mContext)));//android:style/Widget.ProgressBar.Small的宽高
+                Utils.dp2px(16, mContext), Utils.dp2px(16, mContext)));
         progressBar.setLayoutParams(lp);
 
         loadingView.addView(progressBar, lp);
@@ -225,5 +225,12 @@ public abstract class BaseExcelPanelAdapter<T, L, M> implements OnExcelPanelList
         topRecyclerViewAdapter.notifyDataSetChanged();
         leftRecyclerViewAdapter.notifyDataSetChanged();
         ((MajorRecyclerViewAdapter) mRecyclerViewAdapter).customNotifyDataSetChanged();
+    }
+
+    @Override
+    public void onAfterBind(RecyclerView.ViewHolder holder, int position) {
+        if (excelPanel != null) {
+            excelPanel.onAfterBind(holder, position);
+        }
     }
 }
