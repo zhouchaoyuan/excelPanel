@@ -114,6 +114,7 @@ If using setOnLoadMoreListener(...) and enableHeader() you must call addHistoryS
 - V1.0.2--------------Support different viewType which using to config different row with different height
 - V1.0.3--------------Remove adjust height, fix bug when excelPanel in ViewPager
 - V1.0.4--------------Optimizing rolling
+- V1.0.5--------------addOnScrollListener
 
 #License
 

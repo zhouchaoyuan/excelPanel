@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,9 +58,18 @@ public class ExcelFragment extends Fragment implements ExcelPanel.OnLoadMoreList
         adapter = new CustomAdapter(getActivity(), blockListener);
         excelPanel.setAdapter(adapter);
         excelPanel.setOnLoadMoreListener(this);
+        excelPanel.addOnScrollListener(onScrollListener);
         initData();
         return root;
     }
+
+    private ExcelPanel.OnScrollListener onScrollListener = new ExcelPanel.OnScrollListener() {
+        @Override
+        public void onScrolled(ExcelPanel excelPanel, int dx, int dy) {
+            super.onScrolled(excelPanel, dx, dy);
+            Log.e("acjiji", dx + "     " + dy);
+        }
+    };
 
     private View.OnClickListener blockListener = new View.OnClickListener() {
         @Override
