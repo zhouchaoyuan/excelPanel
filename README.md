@@ -7,12 +7,12 @@ A two-dimensional RecyclerView. Not only can load historical data, but also can 
 # Including in your project
 
 ```xml
-compile 'cn.zhouchaoyuan:excelpanel:1.0.4'
+compile 'cn.zhouchaoyuan:excelpanel:1.0.5'
 ```
 
 # Usage
 
-###1、Write in xml
+### 1、Write in xml
 
 ```xml
 <cn.zhouchaoyuan.excelpanel.ExcelPanel
@@ -35,7 +35,7 @@ app:top_cell_height     //top header cell's height, not support wrap_content
 ```
 
 
-###2、Define your Custom Adapter
+### 2、Define your Custom Adapter
 Your adapter must extends BaseExcelPanelAdapter and override seven methods show as follow:
 
 ```java
@@ -86,7 +86,7 @@ public class Adapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cell>{
 }
 ```
 
-###3、Use your Adapter
+### 3、Use your Adapter
 
 ```java
 //==============================
@@ -108,7 +108,7 @@ adapter.enableHeader();//load history, you can also call disableHeader()----defa
 
 If using setOnLoadMoreListener(...) and enableHeader() you must call addHistorySize(int) to tell ExcelPanel how many data have been added.
 
-#ChangeLog
+# ChangeLog
 
 - V1.0.1--------------Line i can be different to line i+1, but the same line's height must be equals
 - V1.0.2--------------Support different viewType which using to config different row with different height
@@ -116,7 +116,7 @@ If using setOnLoadMoreListener(...) and enableHeader() you must call addHistoryS
 - V1.0.4--------------Optimizing rolling
 - V1.0.5--------------addOnScrollListener
 
-#License
+# License
 
 ```xml
 
