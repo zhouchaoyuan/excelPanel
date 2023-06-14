@@ -36,7 +36,7 @@ app:top_cell_height     //top header cell's height, not support wrap_content
 
 
 ### 2、Define your Custom Adapter
-Your adapter must extends BaseExcelPanelAdapter and override seven methods show as follow:
+Your adapter must extend BaseExcelPanelAdapter and override seven methods show as follow:
 
 ```java
 public class Adapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cell>{
